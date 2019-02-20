@@ -20,6 +20,7 @@ function btnClick(val) {
     } else {
         handleNumber(val)
     }
+    rerender()
 }
 
 //Handling display of numbers that were
@@ -30,7 +31,6 @@ function handleNumber(val) {
     } else {
         buffer += val
     }
-    rerender()
 }
 
 function handleSymbol(val) {
@@ -52,7 +52,38 @@ function handleSymbol(val) {
             runningTotal = 0
             break
         case 'Bsp':
-            
+            if(buffer.length === 1) {
+                buffer = '0'
+            } else {
+                buffer = buffer.substring(0, buffer.length - 1)
+            }
+            break
+        default:
+            handleMath(val)
+            break
+    }
+}
+
+function handleMath(val) {
+    const intBuffer = parseInt(buffer)
+    if(runningTotal === 0) {
+        runningTotal = intBuffer
+    } else {
+        flushOper(intBuffer)
+    }
+    prevOperator = val
+    buffer = '0'
+}
+
+function flushOper(intBuffer) {
+    if(prevOperator === '+') {
+        runningTotal += intBuffer
+    } else if(prevOperator === '-') {
+        runningTotal -= intBuffer
+    } else if(prevOperator === '*') {
+        runningTotal *= intBuffer
+    } else {
+        runningTotal /= intBuffer
     }
 }
 
